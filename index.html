@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RankQR – Sistema de ranking escolar con QR para colegios." />
+  <title>RankQR – Ranking Escolar</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- QR Code Generator (solo para mostrar el QR del alumno) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- QR Code Scanner (para la cámara del profesor) -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     VISTA: LOGIN
+══════════════════════════════════════════════ -->
+<div id="view-login" class="view active">
+  <div class="login-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="login-wrap">
+    <!-- Logo -->
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-qrcode"></i></div>
+      <h1 class="brand-name">RankQR</h1>
+      <p class="brand-sub">Sistema de Ranking Escolar</p>
+    </div>
+
+    <!-- Tarjeta de Login -->
+    <div class="login-card glass-card">
+      <h2 class="login-title">Bienvenido</h2>
+      <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
+
+      <form id="login-form" onsubmit="handleLogin(event)" autocomplete="off">
+        <div class="field-group">
+          <label for="inp-user"><i class="fas fa-user"></i> Usuario</label>
+          <input type="text" id="inp-user" placeholder="Ej: prof1, anneliz, jonathan" required />
+        </div>
+        <div class="field-group">
+          <label for="inp-pass"><i class="fas fa-lock"></i> Contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" id="inp-pass" placeholder="••••••" required />
+            <button type="button" class="pass-eye" onclick="togglePass()" tabindex="-1">
+              <i class="fas fa-eye" id="eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-error hidden" id="login-error">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="login-error-msg">Usuario o contraseña incorrectos.</span>
+        </div>
+
+        <button type="submit" class="btn-login" id="btn-login">
+          <span>Ingresar</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- Credenciales rápidas -->
+      <div class="demo-section">
+        <button class="demo-toggle" onclick="toggleDemo()" type="button">
+          <i class="fas fa-key"></i> Credenciales de acceso
+          <i class="fas fa-chevron-down" id="demo-chevron"></i>
+        </button>
+        <div class="demo-list hidden" id="demo-list">
+          <p class="demo-label">Profesor</p>
+          <div class="demo-chip" onclick="autofill('prof1','123456')">
+            <span class="chip-role teacher"><i class="fas fa-chalkboard-teacher"></i> Profesor</span>
+            <span class="chip-creds">prof1 · 123456</span>
+          </div>
+          <p class="demo-label">Alumnos</p>
+          <div class="demo-chip" onclick="autofill('anneliz','123456')">
+            <span class="chip-role student"><i class="fas fa-user-graduate"></i> Alumno</span>
+            <span class="chip-creds">anneliz · 123456</span>
+          </div>
+          <div class="demo-chip" onclick="autofill('jonathan','123456')">
+            <span class="chip-role student"><i class="fas fa-user-graduate"></i> Alumno</span>
+            <span class="chip-creds">jonathan · 123456</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="login-footer">RankQR © 2026 · Sistema Escolar</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     VISTA: DASHBOARD PROFESOR
+══════════════════════════════════════════════ -->
+<div id="view-teacher" class="view">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <i class="fas fa-qrcode"></i>
+      <span>RankQR</span>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="snav active" id="snav-scanner" onclick="tShow('scanner')">
+        <i class="fas fa-camera"></i><span>Escáner QR</span>
+      </button>
+      <button class="snav" id="snav-ranking" onclick="tShow('ranking')">
+        <i class="fas fa-trophy"></i><span>Ranking</span>
+      </button>
+      <button class="snav" id="snav-historial" onclick="tShow('historial')">
+        <i class="fas fa-history"></i><span>Historial</span>
+      </button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="sf-user">
+        <div class="sf-avatar" id="t-avatar">P</div>
+        <div class="sf-info">
+          <span class="sf-name"    id="t-name">Profesor</span>
+          <span class="sf-role"    id="t-loc">📐 Matemática</span>
+        </div>
+      </div>
+      <button class="btn-out" onclick="logout()" title="Salir">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Header -->
+  <header class="mob-header">
+    <button class="ham" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="mob-brand">RankQR</span>
+    <button class="btn-out" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+  </header>
+
+  <!-- Main -->
+  <main class="t-main">
+
+    <!-- ── ESCÁNER QR ── -->
+    <section class="t-section active" id="ts-scanner">
+      <div class="sec-head">
+        <div>
+          <h2><i class="fas fa-camera"></i> Escáner QR</h2>
+          <p>Escanea la pulsera del alumno para asignarle puntos</p>
+        </div>
+        <div class="loc-select-wrap">
+          <label for="t-loc-select"><i class="fas fa-book"></i> Curso activo:</label>
+          <select id="t-loc-select" class="loc-select" onchange="changeTeacherLocation(this.value)">
+            <option value="matematica">📐 Matemática</option>
+            <option value="comunicacion">✍️ Comunicación</option>
+            <option value="dpsc">⚖️ DPSC</option>
+            <option value="ingles">💬 Inglés</option>
+            <option value="ciencia">🧪 Ciencia</option>
+            <option value="arte">🎨 Arte</option>
+            <option value="ed_fisica">⚽ Ed. Física</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="scanner-grid">
+        <!-- Panel de cámara -->
+        <div class="glass-card scanner-panel">
+          <div class="scanner-topbar">
+            <div class="status-pill idle" id="cam-status">
+              <span class="dot"></span>
+              <span id="cam-status-txt">Cámara inactiva</span>
+            </div>
+          </div>
+
+          <!-- Marco visual del escáner -->
+          <div class="cam-box">
+            <div class="cam-placeholder" id="cam-placeholder">
+              <div class="cam-frame">
+                <div class="corner tl"></div>
+                <div class="corner tr"></div>
+                <div class="corner bl"></div>
+                <div class="corner br"></div>
+                <div class="cam-hint">
+                  <i class="fas fa-qrcode"></i>
+                  <p>La cámara aparecerá aquí</p>
+                </div>
+              </div>
+            </div>
+            <!-- El div real del escáner se inyecta aquí por JS -->
+            <div id="qr-reader" class="hidden"></div>
+          </div>
+
+          <div class="cam-controls">
+            <button class="btn-cam-start" id="btn-cam-on" onclick="startCamera()">
+              <i class="fas fa-camera"></i> Iniciar Cámara
+            </button>
+            <button class="btn-cam-stop hidden" id="btn-cam-off" onclick="stopCamera()">
+              <i class="fas fa-stop"></i> Detener
+            </button>
+          </div>
+
+          <!-- QRs Visuales para Pruebas con Celular -->
+          <div style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 1rem;">
+            <p style="font-size: 0.75rem; color: var(--txt2); margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: center;">
+              <i class="fas fa-mobile-alt" style="color: var(--cyan)"></i> Apunta tu celular a estos QR para probar:
+            </p>
+            <div style="display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap;">
+              <div style="background: #ffffff; padding: 1rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
+                <img src="qr_anneliz.png" alt="QR Anneliz" style="width: 180px; height: 180px; display: block; image-rendering: pixelated;" />
+                <span style="color: #111; font-weight: 800; font-size: 0.85rem; display: block; margin-top: 0.5rem;">📱 Anneliz</span>
+              </div>
+              <div style="background: #ffffff; padding: 1rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
+                <img src="qr_jonathan.png" alt="QR Jonathan" style="width: 180px; height: 180px; display: block; image-rendering: pixelated;" />
+                <span style="color: #111; font-weight: 800; font-size: 0.85rem; display: block; margin-top: 0.5rem;">📱 Jonathan</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulador de Pruebas sin Cámara (PC) -->
+          <div class="test-panel" style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 0.8rem;">
+            <p style="font-size: 0.72rem; color: var(--txt3); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
+              <i class="fas fa-flask" style="color: var(--cyan)"></i> Simular Clic Manual (Opcional en PC)
+            </p>
+            <div style="display: flex; gap: 0.5rem;">
+              <select id="test-student-select" style="flex: 1; padding: 0.5rem; border-radius: var(--r-sm); background: var(--bg); color: var(--txt); border: 1px solid var(--border); font-size: 0.8rem; outline: none; cursor: pointer;">
+                <option value="">Cargando alumnos...</option>
+              </select>
+              <button class="btn-cam-start" onclick="simulateQRScan()" style="width: auto; padding: 0.5rem 1.1rem; font-size: 0.8rem; margin: 0; box-shadow: none; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="fas fa-bolt"></i> Registrar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de resultado -->
+        <div class="glass-card result-panel" id="result-panel">
+          <div class="result-idle" id="result-idle">
+            <div class="result-idle-icon"><i class="fas fa-qrcode"></i></div>
+            <h3>Esperando escaneo</h3>
+            <p>Inicia la cámara y apunta al código QR de la pulsera del alumno para asignarle puntos</p>
+          </div>
+          <div class="result-content hidden" id="result-content">
+            <!-- dinámico -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats del día -->
+      <div class="stats-row">
+        <div class="glass-card stat-box">
+          <div class="stat-ico green"><i class="fas fa-bolt"></i></div>
+          <div class="stat-data">
+            <span class="stat-n" id="stat-scans">0</span>
+            <span class="stat-l">Escaneos hoy</span>
+          </div>
+        </div>
+        <div class="glass-card stat-box">
+          <div class="stat-ico cyan"><i class="fas fa-users"></i></div>
+          <div class="stat-data">
+            <span class="stat-n" id="stat-uniq">0</span>
+            <span class="stat-l">Alumnos únicos</span>
+          </div>
+        </div>
+        <div class="glass-card stat-box">
+          <div class="stat-ico purple"><i class="fas fa-star"></i></div>
+          <div class="stat-data">
+            <span class="stat-n" id="stat-pts">0</span>
+            <span class="stat-l">Puntos otorgados</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RANKING ── -->
+    <section class="t-section" id="ts-ranking">
+      <div class="sec-head">
+        <div>
+          <h2><i class="fas fa-trophy"></i> Ranking Global</h2>
+          <p>Clasificación de todos los alumnos por puntos acumulados</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 0.25rem;">
+          <div style="position: relative; display: flex; align-items: center;">
+            <i class="fas fa-search" style="position: absolute; left: 10px; color: var(--txt3); font-size: 0.8rem;"></i>
+            <input type="text" id="t-rank-search" placeholder="Buscar alumno..." oninput="filterRanking('t-ranking', this.value)" style="padding: 0.4rem 0.8rem 0.4rem 1.8rem; border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--border); color: var(--txt); font-size: 0.8rem; outline: none; width: 180px;" />
+          </div>
+          <button class="btn-ghost" onclick="exportRankingToCSV()" title="Exportar a CSV" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border: 1px solid var(--border); border-radius: var(--r-sm); display: flex; align-items: center; gap: 0.4rem; color: var(--txt2); transition: all 0.2s;">
+            <i class="fas fa-file-csv" style="color: #10b981"></i> Exportar
+          </button>
+          <div class="rank-legend">
+            <span><span class="dot-legend filled"></span> Curso registrado</span>
+            <span><span class="dot-legend"></span> Pendiente</span>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card ranking-card" id="t-ranking">
+        <!-- dinámico -->
+      </div>
+    </section>
+
+    <!-- ── HISTORIAL ── -->
+    <section class="t-section" id="ts-historial">
+      <div class="sec-head">
+        <div>
+          <h2><i class="fas fa-history"></i> Historial de Escaneos</h2>
+          <p>Registro de todos los alumnos escaneados en tu curso</p>
+        </div>
+        <button class="btn-ghost" onclick="clearHistory()">
+          <i class="fas fa-trash"></i> Limpiar
+        </button>
+      </div>
+      <div class="glass-card hist-card" id="t-hist">
+        <!-- dinámico -->
+      </div>
+    </section>
+
+  </main>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     VISTA: DASHBOARD ALUMNO
+══════════════════════════════════════════════ -->
+<div id="view-student" class="view">
+
+  <!-- Header -->
+  <header class="stu-header">
+    <div class="stu-hdr-left">
+      <div class="stu-avatar" id="s-avatar">A</div>
+      <div>
+        <h2 id="s-name">Alumno</h2>
+        <span class="stu-sub">RankQR Escolar</span>
+      </div>
+    </div>
+    <div class="stu-hdr-right">
+      <div class="pts-pill">
+        <i class="fas fa-star"></i>
+        <span id="s-pts-hdr">0</span>
+        <span class="pts-unit">pts</span>
+      </div>
+      <button class="btn-out" onclick="logout()" title="Salir">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Nav Tabs -->
+  <nav class="stu-tabs">
+    <button class="stab active" id="stab-qr" onclick="sShow('qr')">
+      <i class="fas fa-qrcode"></i> Mi QR
+    </button>
+    <button class="stab" id="stab-locs" onclick="sShow('locs')">
+      <i class="fas fa-book-open"></i> Cursos
+    </button>
+    <button class="stab" id="stab-rank" onclick="sShow('rank')">
+      <i class="fas fa-trophy"></i> Ranking
+    </button>
+  </nav>
+
+  <!-- Contenido -->
+  <main class="stu-main">
+
+    <!-- ── MI QR ── -->
+    <section class="stu-sec active" id="ss-qr">
+      <div class="stu-sec-head">
+        <h3>Mi Código QR</h3>
+        <p>Presenta este código al profesor en cada curso para ganar puntos</p>
+      </div>
+
+      <div class="glass-card qr-card">
+        <div class="qr-card-top">
+          <div class="qr-stu-name" id="qr-stu-name">—</div>
+          <div class="qr-pts-badge">
+            <i class="fas fa-star"></i>
+            <span id="qr-pts">0</span>
+            <span>pts</span>
+          </div>
+        </div>
+        <div class="qr-wrapper">
+          <div id="qr-canvas"></div>
+          <div class="qr-shine"></div>
+        </div>
+        <div class="qr-uid" id="qr-uid">ID: —</div>
+        <p class="qr-note">
+          <i class="fas fa-info-circle"></i>
+          El profesor escaneará este código con su cámara
+        </p>
+      </div>
+
+      <div class="glass-card pts-card">
+        <div class="pts-big" id="s-pts-big">0</div>
+        <div class="pts-label-big">Puntos acumulados</div>
+        <div class="pts-bar-wrap">
+          <div class="pts-bar">
+            <div class="pts-fill" id="pts-fill" style="width:0%"></div>
+          </div>
+          <span class="pts-bar-txt" id="pts-bar-txt">0 / 7 cursos</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── LOCALIDADES ── -->
+    <section class="stu-sec" id="ss-locs">
+      <div class="stu-sec-head">
+        <h3>Mis Cursos</h3>
+        <p>Asiste a cada curso para sumar puntos. ¡Completa los 7!</p>
+      </div>
+      <div class="locs-grid" id="s-locs-grid">
+        <!-- dinámico -->
+      </div>
+    </section>
+
+    <!-- ── RANKING ── -->
+    <section class="stu-sec" id="ss-rank">
+      <div class="stu-sec-head" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.2rem;">
+        <div>
+          <h3>Ranking Global</h3>
+          <p>Tu posición entre todos los alumnos del colegio</p>
+        </div>
+        <div style="position: relative; display: flex; align-items: center;">
+          <i class="fas fa-search" style="position: absolute; left: 10px; color: var(--txt3); font-size: 0.8rem;"></i>
+          <input type="text" id="s-rank-search" placeholder="Buscar alumno..." oninput="filterRanking('s-ranking', this.value, currentUser.username)" style="padding: 0.4rem 0.8rem 0.4rem 1.8rem; border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--border); color: var(--txt); font-size: 0.8rem; outline: none; width: 180px;" />
+        </div>
+      </div>
+      <div class="glass-card ranking-card" id="s-ranking">
+        <!-- dinámico -->
+      </div>
+    </section>
+
+  </main>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     MODAL: ASIGNAR PUNTO (aparece al escanear QR)
+══════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="assign-modal">
+  <div class="glass-card scan-modal-card" style="max-width:360px;text-align:center;">
+    <div style="font-size:2.5rem;margin-bottom:0.4rem;">📋</div>
+    <h3 style="margin:0 0 0.2rem;color:var(--txt);">Alumno Detectado</h3>
+    <p style="font-size:0.78rem;color:var(--txt3);margin-bottom:1rem;">Selecciona el curso y asigna el punto</p>
+
+    <!-- Info del alumno -->
+    <div style="display:flex;align-items:center;gap:0.8rem;background:var(--surface);border-radius:var(--r-md);padding:0.8rem 1rem;margin-bottom:1rem;">
+      <div class="smc-av" id="am-avatar" style="width:48px;height:48px;font-size:1.3rem;flex-shrink:0;">A</div>
+      <div style="text-align:left;">
+        <strong id="am-name" style="font-size:1.05rem;color:var(--txt);display:block;">Alumno</strong>
+        <span id="am-pts" style="font-size:0.78rem;color:var(--txt3);">0 pts acumulados</span>
+      </div>
+    </div>
+
+    <!-- Selector de curso -->
+    <label style="display:block;text-align:left;font-size:0.78rem;font-weight:600;color:var(--txt2);margin-bottom:0.3rem;">
+      <i class="fas fa-book"></i> Curso a registrar:
+    </label>
+    <select id="am-course-select" style="width:100%;padding:0.65rem 0.8rem;border-radius:var(--r-sm);background:var(--surface);color:var(--txt);border:1px solid var(--border);font-size:0.9rem;margin-bottom:1rem;cursor:pointer;outline:none;">
+    </select>
+
+    <!-- Botones -->
+    <div style="display:flex;gap:0.6rem;">
+      <button onclick="cancelAssignPoint()" style="flex:1;padding:0.7rem;border-radius:var(--r-sm);background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+      <button onclick="confirmAssignPoint()" style="flex:2;padding:0.7rem;border-radius:var(--r-sm);background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(16,185,129,0.3);">
+        <i class="fas fa-check"></i> Asignar Punto
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL DE ESCANEO (resultado)
+══════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="scan-modal">
+  <div class="glass-card scan-modal-card">
+    <div class="smc-icon" id="smc-icon"><i class="fas fa-check-circle"></i></div>
+    <h3 id="smc-title">¡Punto asignado!</h3>
+    <div class="smc-student">
+      <div class="smc-av" id="smc-av">A</div>
+      <div>
+        <strong id="smc-name">Alumno</strong>
+        <p id="smc-detail">+1 punto</p>
+      </div>
+    </div>
+    <button class="btn-login" onclick="closeScanModal()" style="margin-top:0">
+      Continuar <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     TOASTS
+══════════════════════════════════════════════ -->
+<div id="toasts"></div>
+
+
+<!-- Scripts -->
+<script src="app.js"></script>
+<script src="teacher.js"></script>
+<script src="student.js"></script>
+
+</body>
+</html>
