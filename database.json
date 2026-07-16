@@ -12,116 +12,33 @@
       "password": "123456",
       "name": "Anneliz",
       "role": "student",
-      "points": 8,
-      "visitedLocations": [
-        "arte",
-        "ed_fisica",
-        "matematica"
-      ]
+      "points": 0,
+      "visitedLocations": []
     },
     "jonathan": {
       "username": "jonathan",
       "password": "123456",
       "name": "Jonathan",
       "role": "student",
-      "points": 7,
-      "visitedLocations": [
-        "arte",
-        "ciencia",
-        "ed_fisica"
-      ]
+      "points": 0,
+      "visitedLocations": []
+    },
+    "usuario1": {
+      "username": "usuario1",
+      "password": "123456",
+      "name": "Usuario 1",
+      "role": "student",
+      "points": 0,
+      "visitedLocations": []
+    },
+    "usuario2": {
+      "username": "usuario2",
+      "password": "123456",
+      "name": "Usuario 2",
+      "role": "student",
+      "points": 0,
+      "visitedLocations": []
     }
   },
-  "scans": [
-    {
-      "id": "scan_1782801941690_bx75",
-      "studentUsername": "anneliz",
-      "studentName": "Anneliz",
-      "teacherName": "Profesor",
-      "locationName": "Matemática",
-      "locationId": "matematica",
-      "pts": 1,
-      "time": 1782801941690
-    },
-    {
-      "id": "scan_1782801914806_3mxa",
-      "studentUsername": "anneliz",
-      "studentName": "Anneliz",
-      "teacherName": "Profesor",
-      "locationName": "Matemática",
-      "locationId": "matematica",
-      "pts": 2,
-      "time": 1782801914806
-    },
-    {
-      "id": "scan_1782801896266_olnj",
-      "studentUsername": "anneliz",
-      "studentName": "Anneliz",
-      "teacherName": "Profesor",
-      "locationName": "Ed. Física",
-      "locationId": "ed_fisica",
-      "pts": 2,
-      "time": 1782801896266
-    },
-    {
-      "id": "scan_1782801817605_j3kl",
-      "studentUsername": "jonathan",
-      "studentName": "Jonathan",
-      "teacherName": "Profesor",
-      "locationName": "Ed. Física",
-      "locationId": "ed_fisica",
-      "pts": 2,
-      "time": 1782801817605
-    },
-    {
-      "id": "scan_1782801355831_i9bv",
-      "studentUsername": "jonathan",
-      "studentName": "Jonathan",
-      "teacherName": "Profesor",
-      "locationName": "Arte",
-      "locationId": "arte",
-      "pts": 1,
-      "time": 1782801355831
-    },
-    {
-      "id": "scan_1782801347197_8zhz",
-      "studentUsername": "jonathan",
-      "studentName": "Jonathan",
-      "teacherName": "Profesor",
-      "locationName": "Ciencia",
-      "locationId": "ciencia",
-      "pts": 2,
-      "time": 1782801347197
-    },
-    {
-      "id": "scan_1782800812488_srdj",
-      "studentUsername": "anneliz",
-      "studentName": "Anneliz",
-      "teacherName": "Profesor",
-      "locationName": "Arte",
-      "locationId": "arte",
-      "pts": 1,
-      "time": 1782800812488
-    },
-    {
-      "id": "scan_1782800792808_zx0x",
-      "studentUsername": "anneliz",
-      "studentName": "Anneliz",
-      "teacherName": "Profesor",
-      "locationName": "Arte",
-      "locationId": "arte",
-      "pts": 2,
-      "time": 1782800792808
-    },
-    {
-      "id": "scan_1782800721358_5gpf",
-      "studentUsername": "jonathan",
-      "studentName": "Jonathan",
-      "teacherName": "Profesor",
-      "locationName": "Arte",
-      "locationId": "arte",
-      "pts": 2,
-      "time": 1782800721358
-    }
-  ]
+  "scans": []
 }

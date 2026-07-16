@@ -166,14 +166,14 @@ async function _onQRScan(text) {
   let clean = (text || '').trim();
   let username = null;
   
-  if (clean.toLowerCase().includes('anneliz')) {
-    username = 'anneliz';
-  } else if (clean.toLowerCase().includes('jonathan')) {
-    username = 'jonathan';
-  } else if (clean.toUpperCase().startsWith('RANKQR:')) {
+  // Soporte para QR con prefijo RANKQR: (generado por la app)
+  if (clean.toUpperCase().startsWith('RANKQR:')) {
     username = clean.substring(7).trim().toLowerCase();
   } else {
-    username = clean.toLowerCase();
+    // QR sin prefijo (imágenes externas como qr_anneliz.png, qr_usuario1.png, etc.)
+    const candidates = Object.keys(getUsers());
+    const found = candidates.find(u => clean.toLowerCase() === u.toLowerCase());
+    username = found || clean.toLowerCase();
   }
 
   _processScan(username);

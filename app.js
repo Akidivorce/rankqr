@@ -11,14 +11,15 @@ const LOCS = {
   ingles:       { id:'ingles',       name:'Inglés',       icon:'💬', color:'#14b8a6' },
   ciencia:      { id:'ciencia',      name:'Ciencia',      icon:'🧪', color:'#10b981' },
   arte:         { id:'arte',         name:'Arte',         icon:'🎨', color:'#ec4899' },
-  ed_fisica:    { id:'ed_fisica',    name:'Ed. Física',   icon:'⚽', color:'#f59e0b' },
 };
 
 // ── Usuarios ──
 const DEMO_USERS = {
-  prof1:     { username:'prof1',     password:'123456', name:'Profesor', role:'teacher', locationId:'matematica' },
-  anneliz:   { username:'anneliz',   password:'123456', name:'Anneliz',  role:'student', points:0, visitedLocations:[] },
-  jonathan:  { username:'jonathan',  password:'123456', name:'Jonathan', role:'student', points:0, visitedLocations:[] },
+  prof1:     { username:'prof1',     password:'123456', name:'Profesor',  role:'teacher', locationId:'matematica' },
+  anneliz:   { username:'anneliz',   password:'123456', name:'Anneliz',   role:'student', points:0, visitedLocations:[] },
+  jonathan:  { username:'jonathan',  password:'123456', name:'Jonathan',  role:'student', points:0, visitedLocations:[] },
+  usuario1:  { username:'usuario1',  password:'123456', name:'Usuario 1', role:'student', points:0, visitedLocations:[] },
+  usuario2:  { username:'usuario2',  password:'123456', name:'Usuario 2', role:'student', points:0, visitedLocations:[] },
 };
 
 // ── Historial inicial de escaneos ──
@@ -28,7 +29,7 @@ const DEMO_SCANS = [];
 // INICIALIZACIÓN DEL STORE (localStorage + Backend Sync)
 // ═══════════════════════════════════════════
 function initStore() {
-  const schemaVersion = 'v_courses_11';
+  const schemaVersion = 'v_courses_12';
   if (localStorage.getItem('rqr_schema_version') !== schemaVersion) {
     localStorage.removeItem('rqr_users');
     localStorage.removeItem('rqr_scans');

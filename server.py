@@ -21,7 +21,9 @@ DEFAULT_DATA = {
     "users": {
         "prof1":    {"username":"prof1","password":"123456","name":"Profesor","role":"teacher","locationId":"matematica"},
         "anneliz":  {"username":"anneliz","password":"123456","name":"Anneliz","role":"student","points":0,"visitedLocations":[]},
-        "jonathan": {"username":"jonathan","password":"123456","name":"Jonathan","role":"student","points":0,"visitedLocations":[]}
+        "jonathan": {"username":"jonathan","password":"123456","name":"Jonathan","role":"student","points":0,"visitedLocations":[]},
+        "usuario1": {"username":"usuario1","password":"123456","name":"Usuario 1","role":"student","points":0,"visitedLocations":[]},
+        "usuario2": {"username":"usuario2","password":"123456","name":"Usuario 2","role":"student","points":0,"visitedLocations":[]}
     },
     "scans": []
 }
